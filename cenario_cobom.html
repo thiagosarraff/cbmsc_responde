@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conversa WhatsApp - CBMSC Responde (Árvore)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .phone-container {
+            width: 375px;
+            height: 812px;
+            background: #000;
+            border-radius: 40px;
+            padding: 10px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .screen {
+            width: 100%;
+            height: 100%;
+            background: #111b21;
+            border-radius: 30px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .status-bar {
+            height: 44px;
+            background: #2a3942;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .header {
+            height: 60px;
+            background: #2a3942;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            color: #fff;
+            flex-shrink: 0;
+        }
+
+        .profile-pic {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            overflow: hidden;
+        }
+
+        .profile-pic img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+        }
+
+        .contact-info {
+            flex: 1;
+        }
+
+        .contact-name {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 2px;
+        }
+
+        .contact-status {
+            font-size: 12px;
+            color: #8696a0;
+        }
+
+        .chat-container {
+            flex: 1;
+            background: #0b141a;
+            background-image: 
+                radial-gradient(at 25% 25%, rgba(255, 255, 255, 0.02) 0%, transparent 50%),
+                radial-gradient(at 75% 75%, rgba(255, 255, 255, 0.02) 0%, transparent 50%);
+            padding: 16px;
+            overflow-y: auto;
+        }
+
+        .message {
+            margin-bottom: 12px;
+            display: flex;
+            max-width: 80%;
+        }
+
+        .message.user {
+            margin-left: auto;
+            justify-content: flex-end;
+        }
+
+        .message.bot {
+            justify-content: flex-start;
+        }
+
+        .message-bubble {
+            padding: 8px 12px;
+            border-radius: 18px;
+            position: relative;
+            word-wrap: break-word;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .message.user .message-bubble {
+            background: #005c4b;
+            color: #fff;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message.bot .message-bubble {
+            background: #1f2937;
+            color: #e5e7eb;
+            border-bottom-left-radius: 4px;
+        }
+
+        .message-text {
+            font-size: 14px;
+            line-height: 1.4;
+            margin-bottom: 4px;
+        }
+
+        .message-time {
+            font-size: 11px;
+            color: rgba(255,255,255,0.6);
+            text-align: right;
+            margin-top: 4px;
+        }
+
+        .message.bot .message-time {
+            color: rgba(229,231,235,0.6);
+        }
+
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            background: #1f2937;
+            border-radius: 18px;
+            margin-bottom: 12px;
+            max-width: 80px;
+            border-bottom-left-radius: 4px;
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 4px;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #8696a0;
+            animation: typing 1.4s infinite ease-in-out;
+        }
+
+        .dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% {
+                transform: translateY(0);
+                opacity: 0.4;
+            }
+            30% {
+                transform: translateY(-10px);
+                opacity: 1;
+            }
+        }
+
+        .input-area {
+            height: 60px;
+            background: #2a3942;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            gap: 12px;
+            flex-shrink: 0;
+        }
+
+        .input-field {
+            flex: 1;
+            background: #111b21;
+            border: none;
+            border-radius: 20px;
+            padding: 8px 16px;
+            color: #fff;
+            font-size: 14px;
+        }
+
+        .send-button {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #00a884;
+            border: none;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .bot-name {
+            font-weight: 600;
+            color: #00a884;
+            margin-bottom: 4px;
+            font-size: 13px;
+        }
+
+        /* Scrollbar customization */
+        .chat-container::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chat-container::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .chat-container::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
+        }
+
+        .chat-container::-webkit-scrollbar-thumb:hover {
+            background: rgba(255,255,255,0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-container">
+        <div class="screen">
+            <div class="status-bar">
+                <span>15:42</span>
+                <span>••• 5G ••• 95%</span>
+            </div>
+            
+            <div class="header">
+                <div class="profile-pic">
+                    <img src="https://www.cbm.sc.gov.br/images/imagens/O_CBMSC/logo.png" alt="CBMSC">
+                </div>
+                <div class="contact-info">
+                    <div class="contact-name">CBMSC Responde</div>
+                    <div class="contact-status">Assistente Virtual • online</div>
+                </div>
+            </div>
+
+            <div class="chat-container">
+                <div class="message user">
+                    <div class="message-bubble">
+                        <div class="message-text">Boa tarde. Tenho uma árvore muito grande no meu quintal, na Rua das Laranjeiras, bairro Saco Grande. Ela é bem alta e estou com medo que possa cair.</div>
+                        <div class="message-time">14:30</div>
+                    </div>
+                </div>
+
+                <div class="message bot">
+                    <div class="message-bubble">
+                        <div class="bot-name">CBMSC Responde</div>
+                        <div class="message-text">Olá! Sou o CBMSC Responde, seu assistente virtual do Corpo de Bombeiros de Santa Catarina. Entendi sua preocupação com uma árvore de grande porte em sua propriedade na Rua das Laranjeiras, Saco Grande.</div>
+                        <div class="message-time">14:30</div>
+                    </div>
+                </div>
+
+                <div class="message bot">
+                    <div class="message-bubble">
+                        <div class="message-text">Para que eu possa te orientar melhor, preciso entender a situação:</div>
+                        <div class="message-time">14:30</div>
+                    </div>
+                </div>
+
+                <div class="message bot">
+                    <div class="message-bubble">
+                        <div class="message-text">1. A árvore apresenta algum sinal de risco iminente de queda, como tronco partido, inclinação acentuada e recente, raízes expostas de forma anormal, ou estalos?</div>
+                        <div class="message-time">14:31</div>
+                    </div>
+                </div>
+
+                <div class="message bot">
+                    <div class="message-bubble">
+                        <div class="message-text">2. Ela está ameaçando cair sobre pessoas, residências, rede elétrica ou vias públicas neste momento?</div>
+                        <div class="message-time">14:31</div>
+                    </div>
+                </div>
+
+                <div class="message user">
+                    <div class="message-bubble">
+                        <div class="message-text">Não, ela não parece que vai cair agora. Está bem firme no chão e não tem nada quebrado nela. Mas ela é muito grande mesmo, e quando venta forte balança bastante, derruba muita folha e uns galhos pequenos. Fico preocupado a longo prazo.</div>
+                        <div class="message-time">14:33</div>
+                    </div>
+                </div>
+
+                <div class="message bot">
+                    <div class="message-bubble">
+                        <div class="bot-name">CBMSC Responde</div>
+                        <div class="message-text">Compreendo sua preocupação. Em situações onde a árvore está em propriedade particular e não apresenta um risco iminente de queda (ou seja, não há sinais de que possa cair a qualquer momento sobre pessoas ou patrimônio), a responsabilidade pela avaliação de risco, poda preventiva ou eventual corte é geralmente do proprietário do imóvel.</div>
+                        <div class="message-time">14:33</div>
+                    </div>
+                </div>
+
+                <div class="message bot">
+                    <div class="message-bubble">
+                        <div class="message-text">O CBMSC atua prioritariamente em casos de emergência, quando há um perigo claro e imediato.</div>
+                        <div class="message-time">14:34</div>
+                    </div>
+                </div>
+
+                <div class="message user">
+                    <div class="message-bubble">
+                        <div class="message-text">Entendi. E o que eu devo fazer então, já que não é uma emergência? Tenho medo dela me incomodar mais para frente.</div>
+                        <div class="message-time">14:35</div>
+                    </div>
+                </div>
+
+                <div class="message bot">
+                    <div class="message-bubble">
+                        <div class="bot-name">CBMSC Responde</div>
+                        <div class="message-text">Nesse caso, o procedimento recomendado é:</div>
+                        <div class="message-time">14:35</div>
+                    </div>
+                </div>
+
+                <div class="message bot">
+                    <div class="message-bubble">
+                        <div class="message-text">1. **Procure um profissional habilitado:** Um profissional especializado poderá fazer uma avaliação técnica da saúde da árvore, identificar se há algum risco futuro e indicar a melhor solução (poda de segurança, tratamento ou, em último caso, o corte completo). Eles também podem orientar sobre como obter as autorizações necessárias.</div>
+                        <div class="message-time">14:36</div>
+                    </div>
+                </div>
+
+                <div class="message bot">
+                    <div class="message-bubble">
+                        <div class="message-text">2. **Verifique a necessidade de autorização municipal/ambiental:** Antes de qualquer intervenção (poda drástica ou corte), é fundamental consultar o órgão ambiental do seu município, que em Florianópolis é a FLORAM. Eles informarão sobre a necessidade de licença para a intervenção, especialmente se a árvore for nativa, de grande porte ou estiver em área de preservação.</div>
+                        <div class="message-time">14:37</div>
+                    </div>
+                </div>
+
+                <div class="message bot">
+                    <div class="message-bubble">
+                        <div class="message-text">Posso fornecer o contato da FLORAM para você verificar sobre as autorizações?</div>
+                        <div class="message-time">14:37</div>
+                    </div>
+                </div>
+
+                <div class="message user">
+                    <div class="message-bubble">
+                        <div class="message-text">Sim, por favor. E é perigoso eu mesmo tentar cortar uns galhos?</div>
+                        <div class="message-time">14:38</div>
+                    </div>
+                </div>
+
+                <div class="message bot">
+                    <div class="message-bubble">
+                        <div class="bot-name">CBMSC Responde</div>
+                        <div class="message-text">O contato da FLORAM para informações sobre poda e supressão de árvores em Florianópolis é o telefone [Número de Telefone da FLORAM] ou o site [Link do site da FLORAM].</div>
+                        <div class="message-time">14:38</div>
+                    </div>
+                </div>
+
+                <div class="message bot">
+                    <div class="message-bubble">
+                        <div class="message-text">**É altamente recomendável que você NÃO tente realizar podas ou o corte da árvore por conta própria, especialmente se for de grande porte.** Essas atividades envolvem riscos significativos de acidentes graves, tanto para você quanto para terceiros ou para a fiação elétrica e imóveis próximos.</div>
+                        <div class="message-time">14:39</div>
+                    </div>
+                </div>
+
+                <div class="message bot">
+                    <div class="message-bubble">
+                        <div class="message-text">Sempre contrate profissionais qualificados e com equipamentos de segurança adequados. Eles também saberão a forma correta de fazer a poda sem prejudicar a árvore desnecessariamente.</div>
+                        <div class="message-time">14:40</div>
+                    </div>
+                </div>
+
+                <div class="message bot">
+                    <div class="message-bubble">
+                        <div class="message-text">Posso ajudar em algo mais?</div>
+                        <div class="message-time">14:40</div>
+                    </div>
+                </div>
+
+                <div class="message user">
+                    <div class="message-bubble">
+                        <div class="message-text">Não, muito obrigado pelas orientações! Foi bem completo.</div>
+                        <div class="message-time">14:41</div>
+                    </div>
+                </div>
+
+                <div class="message bot">
+                    <div class="message-bubble">
+                        <div class="bot-name">CBMSC Responde</div>
+                        <div class="message-text">De nada! Lembre-se, em caso de risco iminente ou emergência, não hesite em nos contatar pelo 193. Para outras dúvidas ou informações, estamos à disposição. O CBMSC agradece o seu contato!</div>
+                        <div class="message-time">14:42</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="input-area">
+                <input type="text" class="input-field" placeholder="Digite uma mensagem">
+                <button class="send-button">→</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
