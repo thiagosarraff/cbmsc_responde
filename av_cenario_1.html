@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conversa WhatsApp - CBMSC Responde</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .phone-container {
+            width: 375px;
+            height: 812px;
+            background: #000;
+            border-radius: 40px;
+            padding: 10px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .screen {
+            width: 100%;
+            height: 100%;
+            background: #111b21;
+            border-radius: 30px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .status-bar {
+            height: 44px;
+            background: #2a3942;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .header {
+            height: 60px;
+            background: #2a3942;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            color: #fff;
+            flex-shrink: 0;
+        }
+
+        .profile-pic {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            overflow: hidden;
+        }
+
+        .profile-pic img {
+            width: 36px;
+            height: 36px;
+            object-fit: contain;
+        }
+
+        .contact-info {
+            flex: 1;
+        }
+
+        .contact-name {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 2px;
+        }
+
+        .contact-status {
+            font-size: 12px;
+            color: #8696a0;
+        }
+
+        .chat-container {
+            flex: 1;
+            background: #0b141a;
+            background-image: 
+                radial-gradient(at 25% 25%, rgba(255, 255, 255, 0.02) 0%, transparent 50%),
+                radial-gradient(at 75% 75%, rgba(255, 255, 255, 0.02) 0%, transparent 50%);
+            padding: 16px;
+            overflow-y: auto;
+        }
+
+        .message {
+            margin-bottom: 12px;
+            display: flex;
+            max-width: 80%;
+        }
+
+        .message.user {
+            margin-left: auto;
+            justify-content: flex-end;
+        }
+
+        .message.bot {
+            justify-content: flex-start;
+        }
+
+        .message-bubble {
+            padding: 8px 12px;
+            border-radius: 18px;
+            position: relative;
+            word-wrap: break-word;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .message.user .message-bubble {
+            background: #005c4b;
+            color: #fff;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message.bot .message-bubble {
+            background: #1f2937;
+            color: #e5e7eb;
+            border-bottom-left-radius: 4px;
+        }
+
+        .message-text {
+            font-size: 14px;
+            line-height: 1.4;
+            margin-bottom: 4px;
+        }
+
+        .message-time {
+            font-size: 11px;
+            color: rgba(255,255,255,0.6);
+            text-align: right;
+            margin-top: 4px;
+        }
+
+        .message.bot .message-time {
+            color: rgba(229,231,235,0.6);
+        }
+
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            background: #1f2937;
+            border-radius: 18px;
+            margin-bottom: 12px;
+            max-width: 80px;
+            border-bottom-left-radius: 4px;
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 4px;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #8696a0;
+            animation: typing 1.4s infinite ease-in-out;
+        }
+
+        .dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% {
+                transform: translateY(0);
+                opacity: 0.4;
+            }
+            30% {
+                transform: translateY(-10px);
+                opacity: 1;
+            }
+        }
+
+        .input-area {
+            height: 60px;
+            background: #2a3942;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            gap: 12px;
+            flex-shrink: 0;
+        }
+
+        .input-field {
+            flex: 1;
+            background: #111b21;
+            border: none;
+            border-radius: 20px;
+            padding: 8px 16px;
+            color: #fff;
+            font-size: 14px;
+        }
+
+        .send-button {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #00a884;
+            border: none;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .bot-name {
+            font-weight: 600;
+            color: #00a884;
+            margin-bottom: 4px;
+            font-size: 13px;
+        }
+
+        /* Scrollbar customization */
+        .chat-container::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chat-container::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .chat-container::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
+        }
+
+        .chat-container::-webkit-scrollbar-thumb:hover {
+            background: rgba(255,255,255,0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-container">
+        <div class="screen">
+            <div class="status-bar">
+                <span>9:27</span>
+                <span>••• 5G ••• 97%</span>
+            </div>
+            
+            <div class="header">
+                <div class="profile-pic">
+                    <img src="https://www.cbm.sc.gov.br/images/imagens/O_CBMSC/logo.png" alt="CBMSC">
+                </div>
+                <div class="contact-info">
+                    <div class="contact-name">CBMSC Responde</div>
+                    <div class="contact-status">Assistente Virtual • online</div>
+                </div>
+            </div>
+
+            <div class="chat-container">
+                <div class="message user">
+                    <div class="message-bubble">
+                        <div class="message-text">Bom dia. Aluguei uma sala comercial num prédio aqui em Florianópolis e preciso tirar o atestado de funcionamento dos bombeiros. Minha empresa é nova lá. Como faço no sistema E-SCI?</div>
+                        <div class="message-time">09:15</div>
+                    </div>
+                </div>
+
+                <div class="message bot">
+                    <div class="message-bubble">
+                        <div class="bot-name">CBMSC Responde</div>
+                        <div class="message-text">Bom dia! Sou o CBMSC Responde, seu assistente virtual do CBMSC. Entendido, você precisa do Atestado de Funcionamento para sua sala comercial.</div>
+                        <div class="message-time">09:15</div>
+                    </div>
+                </div>
+
+                <div class="message bot">
+                    <div class="message-bubble">
+                        <div class="message-text">Para prosseguirmos, preciso de algumas informações:</div>
+                        <div class="message-time">09:15</div>
+                    </div>
+                </div>
+
+                <div class="message bot">
+                    <div class="message-bubble">
+                        <div class="message-text">Sua sala comercial fica em um edifício que possui outras salas, correto?</div>
+                        <div class="message-time">09:15</div>
+                    </div>
+                </div>
+
+                <div class="message bot">
+                    <div class="message-bubble">
+                        <div class="message-text">Você já possui o número do Registro de Edificação (RE) do edifício onde ela se localiza?</div>
+                        <div class="message-time">09:16</div>
+                    </div>
+                </div>
+
+                <div class="message user">
+                    <div class="message-bubble">
+                        <div class="message-text">Sim, fica num prédio com várias outras salas. Não tenho certeza sobre o RE, a sala é nova para mim, acho que não tenho esse número.</div>
+                        <div class="message-time">09:17</div>
+                    </div>
+                </div>
+
+                <div class="message bot">
+                    <div class="message-bubble">
+                        <div class="bot-name">CBMSC Responde</div>
+                        <div class="message-text">Compreendo. Em edifícios com múltiplas unidades, geralmente há um RE para o edifício como um todo (que pode conter blocos) e, em seguida, solicitações específicas para cada sala ('área específica').</div>
+                        <div class="message-time">09:17</div>
+                    </div>
+                </div>
+
+                <div class="message bot">
+                    <div class="message-bubble">
+                        <div class="message-text">Para te ajudar melhor, gostaria de consultar se já existe um RE cadastrado para o endereço do edifício? Se sim, por favor, me informe o endereço completo (Rua, Número, Bairro, Cidade).</div>
+                        <div class="message-time">09:18</div>
+                    </div>
+                </div>
+
+                <div class="message user">
+                    <div class="message-bubble">
+                        <div class="message-text">Sim, por favor. O endereço é Rua das Acácias, 123, Bairro Centro, Florianópolis.</div>
+                        <div class="message-time">09:19</div>
+                    </div>
+                </div>
+
+                <div class="message bot">
+                    <div class="message-bubble">
+                        <div class="bot-name">CBMSC Responde</div>
+                        <div class="message-text">Um momento enquanto consulto...</div>
+                        <div class="message-time">09:19</div>
+                    </div>
+                </div>
+
+                <div class="message bot">
+                    <div class="message-bubble">
+                        <div class="bot-name">CBMSC Responde</div>
+                        <div class="message-text">Encontrei um RE para o endereço Rua das Acácias, 123, Centro, Florianópolis. Trata-se de um Edifício Comercial com RE nº 2025-007890.</div>
+                        <div class="message-time">09:20</div>
+                    </div>
+                </div>
+
+                <div class="message bot">
+                    <div class="message-bubble">
+                        <div class="message-text">Verifiquei também que este edifício (bloco) possui um Atestado de Funcionamento vigente até 15/10/2025. Isso é uma ótima notícia, pois facilita o processo para sua sala!</div>
+                        <div class="message-time">09:20</div>
+                    </div>
+                </div>
+
+                <div class="message user">
+                    <div class="message-bubble">
+                        <div class="message-text">Que bom! E agora, como peço para a minha sala especificamente?</div>
+                        <div class="message-time">09:21</div>
+                    </div>
+                </div>
+
+                <div class="message bot">
+                    <div class="message-bubble">
+                        <div class="bot-name">CBMSC Responde</div>
+                        <div class="message-text">Excelente! Como o edifício principal está regular e possui um RE (nº 2025-007890), você deverá solicitar um 'Atestado de Funcionamento para Área Específica' para a sua sala comercial através do sistema E-SCI.</div>
+                        <div class="message-time">09:21</div>
+                    </div>
+                </div>
+
+                <div class="message bot">
+                    <div class="message-bubble">
+                        <div class="message-text">No E-SCI, você precisará se vincular ao imóvel deste RE e então criar uma nova solicitação para sua área.</div>
+                        <div class="message-time">09:22</div>
+                    </div>
+                </div>
+
+                <div class="message bot">
+                    <div class="message-bubble">
+                        <div class="message-text">Quer que eu detalhe os passos e os campos mais importantes que você precisará preencher no E-SCI para esta solicitação de área específica, evitando as dúvidas mais comuns?</div>
+                        <div class="message-time">09:22</div>
+                    </div>
+                </div>
+
+                <div class="message user">
+                    <div class="message-bubble">
+                        <div class="message-text">Sim, por favor! Principalmente essa diferença de área do bloco e da sala, e o que colocar na altura e pavimentos, porque o tutorial que vi me deixou confuso.</div>
+                        <div class="message-time">09:23</div>
+                    </div>
+                </div>
+
+                <div class="message bot">
+                    <div class="message-bubble">
+                        <div class="bot-name">CBMSC Responde</div>
+                        <div class="message-text">Perfeito! Vamos lá:</div>
+                        <div class="message-time">09:23</div>
+                    </div>
+                </div>
+
+                <div class="message bot">
+                    <div class="message-bubble">
+                        <div class="message-text">No E-SCI, ao solicitar o 'Atestado de Funcionamento para Área Específica': Você informará o RE (2025-007890) ao qual sua sala pertence.</div>
+                        <div class="message-time">09:24</div>
+                    </div>
+                </div>
+
+                <div class="message bot">
+                    <div class="message-bubble">
+                        <div class="message-text">Dados da Edificação: O sistema já trará os dados gerais do edifício. Caso precise confirmar ou preencher, a altura da edificação e o número de pavimentos referem-se sempre ao edifício como um todo, não apenas à sua sala.</div>
+                        <div class="message-time">09:24</div>
+                    </div>
+                </div>
+
+                <div class="message bot">
+                    <div class="message-bubble">
+                        <div class="message-text">Dados da Área Específica (sua sala): Aqui você informará a 'área construída' exclusivamente da sua sala comercial. Informe também a ocupação principal da sua sala (ex: comércio - loja de roupas, serviços - escritório de contabilidade), a lotação estimada de pessoas, a altura e o número de pavimentos, tudo relacionado apenas a sua sala comercial, ok?</div>
+                        <div class="message-time">09:25</div>
+                    </div>
+                </div>
+
+                <div class="message bot">
+                    <div class="message-bubble">
+                        <div class="message-text">Questionário do REGIN (se sua atividade exigir): Responda com atenção às perguntas sobre as características e riscos da sua atividade específica que será exercida apenas na sala comercial sob sua responsabilidade.</div>
+                        <div class="message-time">09:25</div>
+                    </div>
+                </div>
+
+                <div class="message bot">
+                    <div class="message-bubble">
+                        <div class="message-text">Lembre-se que, por ser uma área específica dentro de um bloco já regular, o foco da análise será nas condições de segurança da sua unidade e sua atividade. Posso ajudar com mais algum detalhe sobre o preenchimento ou sobre como verificar a lista de documentos que podem ser solicitados para sua atividade?</div>
+                        <div class="message-time">09:26</div>
+                    </div>
+                </div>
+
+                <div class="message user">
+                    <div class="message-bubble">
+                        <div class="message-text">Muito mais claro agora! Obrigado!</div>
+                        <div class="message-time">09:26</div>
+                    </div>
+                </div>
+
+                <div class="message bot">
+                    <div class="message-bubble">
+                        <div class="bot-name">CBMSC Responde</div>
+                        <div class="message-text">De nada! Se precisar de mais alguma orientação sobre este ou outro processo, é só perguntar. O CBMSC agradece o seu contato!</div>
+                        <div class="message-time">09:27</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="input-area">
+                <input type="text" class="input-field" placeholder="Digite uma mensagem">
+                <button class="send-button">→</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
