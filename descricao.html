@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CBMSC Responde - Protótipo Conceitual</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f8f9fa;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #c41e3a, #8b1538);
+            color: white;
+            padding: 1.5rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 1rem;
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            position: relative; /* Adicionado para posicionamento do botão */
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-shrink: 0;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            box-shadow: 4px 4px 4px rgba(0,0,0,0.3);
+            background: white;
+            border-radius: 50%;
+        }
+
+        .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .title-section {
+            flex: 1;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.3rem;
+            font-weight: 600;
+        }
+
+        .header p {
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+
+        .nav-menu {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out; /* Adicionado para transição suave */
+        }
+
+        /* Estilos para o botão do menu hambúrguer */
+        .menu-toggle {
+            display: none; /* Escondido por padrão */
+            background: none;
+            border: none;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            position: absolute; /* Posicionamento absoluto */
+            right: 1rem; /* Alinhado à direita */
+            top: 50%; /* Centralizado verticalmente */
+            transform: translateY(-50%); /* Ajuste para centralização */
+            z-index: 101; /* Acima de outros elementos */
+        }
+
+        .menu-toggle:focus {
+            outline: none;
+        }
+
+        .nav-item {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+        }
+
+        .nav-item:hover {
+            background: rgba(255,255,255,0.15);
+            color: white;
+        }
+
+        .content {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .section {
+            padding: 2.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .section:last-child {
+            border-bottom: none;
+        }
+
+        .section h2 {
+            font-size: 2.2rem;
+            margin-bottom: 1.2rem;
+            color: #b0bbc5;
+            position: relative;
+        }
+
+        .section h2::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: #c41e3a;
+            border-radius: 2px;
+        }
+
+        .section h3 {
+            font-size: 1.2rem;
+            margin: 1.5rem 0 1rem 0;
+            color: #34495e;
+        }
+
+        .section p {
+            margin-bottom: 1rem;
+            font-size: 1rem;
+            line-height: 1.7;
+        }
+
+        .highlight-box {
+            background: #ffe9e9;
+            border-left: 4px solid #c41e3a;
+            padding: 2rem;
+            margin: .5rem 0;
+            border-radius: 5px 6px 6px 5px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1.2rem;
+            margin: 1.5rem 0;
+        }
+
+        .stat-card {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1.2rem;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .stat-number {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #c41e3a;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 0.4rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .feature-card {
+            background: rgb(250, 250, 250);
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 4px 8px 12px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.12);
+        }
+
+        .feature-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #c41e3a, #8b1538);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+            color: white;
+        }
+
+        .diagram-container {
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            margin: 1.5rem 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            aspect-ratio: 3840/2098;
+        }
+
+        .diagram-container:hover {
+            border-color: #c41e3a;
+            background: #f1f3f4;
+        }
+
+        .diagram-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 4px;
+        }
+
+        .diagram-placeholder {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+        }
+
+        .scenario-section {
+            margin: 2rem 0;
+        }
+
+        .scenario-embed {
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            margin: 1rem 0;
+            overflow: hidden;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            width: 100%;
+            height: 860px;
+            max-width: 375px;
+            margin: 1rem auto;
+        }
+
+        .scenario-embed iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .technical-detail {
+            background: #dbedff;
+            border-radius: 6px;
+            padding: 2rem;
+            margin: .5rem 0;
+            border-left: 4px solid #17a2b8;
+        }
+
+        .cta-section {
+            background: linear-gradient(135deg, #c41e3a, #8b1538);
+            color: white;
+            padding: 2.5rem;
+            border-radius: 8px;
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .cta-section h3 {
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .whatsapp-button {
+            display: inline-block;
+            background: #25D366; /* Cor do WhatsApp */
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 1.5rem;
+            transition: background 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .whatsapp-button:hover {
+            background: #1DA851; /* Cor mais escura no hover */
+        }
+
+        .whatsapp-button {
+            display: inline-block;
+            background: #25D366; /* Cor do WhatsApp */
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 1.5rem;
+            transition: background 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .whatsapp-button:hover {
+            background: #1DA851; /* Cor mais escura no hover */
+        }
+
+        /* Modal para zoom do diagrama */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.9);
+        }
+
+        .modal-content {
+            position: relative;
+            margin: auto;
+            padding: 20px;
+            width: 90%;
+            height: 90%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            cursor: zoom-in;
+        }
+
+        .modal-content img.zoomed {
+            cursor: zoom-out;
+            transform: scale(2);
+            transition: transform 0.3s ease;
+        }
+
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 35px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #c41e3a;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 1rem 0;
+                position: sticky; /* Mantém o cabeçalho fixo */
+                top: 0;
+                z-index: 100;
+            }
+
+            .header-content {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                padding: 0 1rem;
+            }
+
+            .logo-section {
+                display: flex; /* Garante que o logo seja exibido */
+                align-items: center;
+                gap: 0.5rem; /* Reduz o gap para compactar */
+            }
+
+            .logo {
+                width: 48px; /* Reduz o tamanho do logo em mobile em 20% (de 60px para 48px) */
+                height: 48px;
+            }
+
+            .title-section {
+                flex: 1;
+                text-align: left;
+                margin-left: 0.5rem; /* Adiciona uma pequena margem para separar do logo */
+            }
+
+            .header h1 {
+                font-size: 1.3rem; /* Reduz o tamanho da fonte do título */
+                margin-bottom: 0;
+            }
+
+            .header p {
+                display: none; /* Mantém o subtítulo escondido para compactar */
+            }
+
+            .nav-menu {
+                display: none; /* Esconde o menu por padrão em mobile */
+                flex-direction: column;
+                width: 100%;
+                background: linear-gradient(135deg, #c41e3a, #8b1538);
+                position: absolute;
+                top: 100%; /* Abaixo do cabeçalho */
+                left: 0;
+                padding: 1rem 0;
+                box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+                max-height: 0; /* Para a transição de altura */
+                overflow: hidden; /* Esconde o conteúdo que excede a altura */
+                opacity: 0; /* Para a transição de opacidade */
+            }
+
+            .nav-menu.active {
+                display: flex; /* Mostra o menu quando ativo */
+                max-height: 500px; /* Aumenta a altura máxima para exibir todos os itens */
+                opacity: 1; /* Mostra o menu */
+            }
+
+            .nav-item {
+                padding: 0.8rem 1rem;
+                text-align: center;
+                width: 100%;
+                border-radius: 0;
+            }
+
+            .menu-toggle {
+                display: block; /* Mostra o botão do menu em mobile */
+            }
+
+            .section {
+                padding: 2rem 0;
+            }
+
+            .section h2 {
+                font-size: 1.5rem;
+            }
+
+            .stats-grid,
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .scenario-embed {
+                height: 400px;
+                max-width: 100%;
+            }
+
+            .diagram-container {
+                padding: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .content {
+                padding: 0 0.5rem;
+            }
+
+            .section {
+                padding: 1.5rem 0;
+            }
+
+            .scenario-embed {
+                height: 350px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <div class="logo">
+                        <img src="https://www.cbm.sc.gov.br/images/imagens/O_CBMSC/logo.png" alt="CBMSC Logo">
+                    </div>
+                </div>
+                <div class="title-section">
+                    <h1><b>CBMSC Responde</b></h1>
+                    <p><b>Protótipo Conceitual de Assistente Virtual com IA Generativa</b></p>
+                    
+                    <nav class="nav-menu" id="mainNav">
+                        <a href="#contexto" class="nav-item">Contexto</a>
+                        <a href="#problema" class="nav-item">Problema</a>
+                        <a href="#solucao" class="nav-item">Solução</a>
+                        <a href="#arquitetura" class="nav-item">Arquitetura</a>
+                        <a href="#cenarios" class="nav-item">Cenários</a>
+                        <a href="#beneficios" class="nav-item">Benefícios</a>
+                        <a href="#avaliacao" class="nav-item">Avaliação</a>
+                    </nav>
+                </div>
+                <button class="menu-toggle" id="menuToggle">&#9776;</button> <!-- Ícone de hambúrguer -->
+            </div>
+        </header>
+
+        <div class="content">
+            <section id="contexto" class="section">
+                <h2>Contexto e Motivação</h2>
+                
+                <p>O Corpo de Bombeiros Militar de Santa Catarina (CBMSC) enfrenta desafios significativos na gestão e disseminação de informações institucionais, impactando tanto o atendimento ao cidadão quanto a eficiência operacional interna.</p>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span class="stat-number">608 mil</span>
+                        <span class="stat-label">Chamadas COBOM em 2024</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number">~20%</span>
+                        <span class="stat-label">São atendimentos informacionais</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number">10 mil</span>
+                        <span class="stat-label">Documentos vigentes</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number">546</span>
+                        <span class="stat-label">Militares em funções administrativas</span>
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <strong>Oportunidade Estratégica:</strong> A criação do Escritório de Inteligência de Dados e Análises (Portaria nº 420/2024) sinaliza o compromisso institucional com modernização e adoção de tecnologias emergentes como IA.
+                </div>
+            </section>
+
+            <section id="problema" class="section">
+                <h2>Problema Identificado</h2>
+                
+                <p>A pesquisa identificou três principais gargalos na gestão da informação do CBMSC:</p>
+
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">📚</div>
+                        <h3>Fragmentação do Conhecimento Interno</h3>
+                        <p>Bombeiros militares enfrentam dificuldades para localizar e consultar PAPs, normas de RH e procedimentos, impactando a agilidade decisória.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📞</div>
+                        <h3>Sobrecarga no Atendimento Externo</h3>
+                        <p>Volume expressivo de consultas não emergenciais sobre E-SCI, procedimentos e informações gerais consomem tempo significativo dos atendentes.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">⚡</div>
+                        <h3>Ineficiência na Disseminação</h3>
+                        <p>Ausência de canal centralizado e inteligente resulta em respostas inconsistentes e uso ineficiente de recursos humanos qualificados.</p>
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <strong>Impacto Organizacional:</strong> Estes desafios afetam diretamente a eficiência operacional, a alocação de recursos humanos, a padronização dos serviços e a satisfação dos usuários, justificando a busca por soluções inovadoras alinhadas com a missão de excelência do CBMSC.
+                </div>
+            </section>
+
+            <section id="solucao" class="section">
+                <h2>Solução Proposta: CBMSC Responde</h2>
+                
+                <p>O "CBMSC Responde" é um assistente virtual conversacional baseado em Inteligência Artificial Generativa, desenvolvido para otimizar o acesso à informação institucional e qualificar o atendimento não emergencial.</p>
+
+                <h3>Públicos-Alvo Prioritários</h3>
+                
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">🏢</div>
+                        <h3>Externo - Serviços SSCI</h3>
+                        <p>Usuários que buscam orientação sobre processos de Segurança Contra Incêndio, com ênfase no sistema E-SCI e regularização de edificações.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🚨</div>
+                        <h3>Externo - COBOM Geral</h3>
+                        <p>Cidadãos com dúvidas não emergenciais que podem ser resolvidas com informações padronizadas ou encaminhamento adequado.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">👥</div>
+                        <h3>Interno - Bombeiros Militares</h3>
+                        <p>Militares que necessitam acesso a informações sobre PAPs, normas de pessoal e outros procedimentos administrativos.</p>
+                    </div>
+                </div>
+
+                <h3>Funcionalidades Centrais</h3>
+
+                <div class="technical-detail">
+                    <h4>Requisitos Funcionais Prioritários</h4>
+                    <ul>
+                        <li><strong>RF01:</strong> Orientação interativa para processos de SCI</li>
+                        <li><strong>RF02:</strong> Consulta a informações e status de processos SCI</li>
+                        <li><strong>RF03:</strong> Triagem de demandas não emergenciais e direcionamento</li>
+                        <li><strong>RF04:</strong> Acesso a informações administrativas e de pessoal (autenticado)</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="arquitetura" class="section">
+                <h2>Arquitetura Técnica de Referência</h2>
+                
+                <p>A solução baseia-se na integração de um Large Language Model (LLM) com a técnica de Retrieval Augmented Generation (RAG), garantindo respostas precisas ancoradas no conhecimento institucional do CBMSC.</p>
+
+                <div class="diagram-container" onclick="openDiagram()">
+                    <img src="diagrama.png" alt="Diagrama da Arquitetura Técnica" style="display: none;" onload="this.style.display='block'; this.parentNode.querySelector('.diagram-placeholder').style.display='none';">
+                    <div class="diagram-placeholder">
+                        <h3>📊 Diagrama da Arquitetura Técnica</h3>
+                        <p>Clique para visualizar o diagrama completo com zoom</p>
+                    </div>
+                </div>
+
+                <div class="technical-detail">
+                    <h4>Componentes Principais</h4>
+                    <ul>
+                        <li><strong>Interface WhatsApp:</strong> Canal principal de interação via WhatsApp Business API</li>
+                        <li><strong>Módulo de Orquestração:</strong> Gerencia fluxo conversacional e estado da sessão</li>
+                        <li><strong>LLM:</strong> Processamento de linguagem natural e geração de respostas</li>
+                        <li><strong>Sistema RAG:</strong> Recuperação contextual da base de conhecimento institucional</li>
+                        <li><strong>Autenticação:</strong> Verificação segura para acesso a funcionalidades internas</li>
+                        <li><strong>Interface Administrativa:</strong> Gestão e curadoria da base de conhecimento</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="cenarios" class="section">
+                <h2>Cenários de Uso Demonstrativos</h2>
+                
+                <p>Para ilustrar a aplicabilidade do "CBMSC Responde", foram desenvolvidos três cenários interativos que demonstram o funcionamento esperado para cada público-alvo prioritário.</p>
+
+                <div class="scenario-section">
+                    <h3>Cenário 1: Orientação sobre Regularização de Estabelecimento Comercial</h3>
+                    <p>Demonstra como o assistente virtual orienta um proprietário de sala comercial no processo de obtenção do Atestado de Funcionamento, esclarecendo dúvidas sobre o sistema E-SCI e fornecendo orientação personalizada.</p>
+                    
+                    <div class="scenario-embed">
+                        <iframe src="https://thiagosarraff.github.io/cbmsc_responde/cenario_sci.html" title="Cenário 1 - SCI"></iframe>
+                    </div>
+                </div>
+
+                <div class="scenario-section">
+                    <h3>Cenário 2: Triagem de Demanda Não Emergencial</h3>
+                    <p>Ilustra a capacidade do assistente em atuar como filtro inteligente para demandas não emergenciais, realizando triagem, fornecendo orientações preventivas e direcionando para o órgão competente.</p>
+                    
+                    <div class="scenario-embed">
+                        <iframe src="https://thiagosarraff.github.io/cbmsc_responde/cenario_cobom.html" title="Cenário 2 - COBOM"></iframe>
+                    </div>
+                </div>
+
+                <div class="scenario-section">
+                    <h3>Cenário 3: Consulta Interna sobre Conversão de Licença Especial</h3>
+                    <p>Demonstra o atendimento ao público interno, com autenticação e orientação sobre processo complexo de conversão de Licença Especial em pecúnia, respeitando o contexto legal vigente.</p>
+                    
+                    <div class="scenario-embed">
+                        <iframe src="https://thiagosarraff.github.io/cbmsc_responde/cenario_dp.html" title="Cenário 3 - DP"></iframe>
+                    </div>
+                </div>
+            </section>
+
+            <section id="beneficios" class="section">
+                <h2>Benefícios e Impactos Esperados</h2>
+
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">⚡</div>
+                        <h3>Eficiência Operacional</h3>
+                        <p>Redução significativa do tempo gasto com consultas repetitivas, liberando recursos para atividades de maior valor.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🎯</div>
+                        <h3>Padronização de Respostas</h3>
+                        <p>Garantia de informações consistentes e atualizadas, baseadas em fontes oficiais do CBMSC.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🕐</div>
+                        <h3>Disponibilidade 24/7</h3>
+                        <p>Atendimento contínuo para demandas não emergenciais, melhorando a experiência do usuário.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📈</div>
+                        <h3>Modernização Institucional</h3>
+                        <p>Alinhamento com estratégias de transformação digital e inovação tecnológica.</p>
+                    </div>
+                </div>
+
+                <div class="technical-detail">
+                    <h4>Aspectos de Segurança e Conformidade</h4>
+                    <ul>
+                        <li><strong>LGPD:</strong> Conformidade total com a Lei Geral de Proteção de Dados</li>
+                        <li><strong>Segurança da Informação:</strong> Arquitetura segura com controle de acesso e auditoria</li>
+                        <li><strong>Confiabilidade:</strong> Sistema RAG minimiza risco de informações incorretas</li>
+                        <li><strong>Escalabilidade:</strong> Design modular permite expansão futura</li>
+                    </ul>
+                </div>
+
+                <div class="highlight-box">
+                    <strong>Potencial de Expansão:</strong> O design modular permite futuras incorporações como integração com outros sistemas, novos domínios de conhecimento e funcionalidades avançadas de análise de dados.
+                </div>
+            </section>
+
+            <section id="avaliacao" class="section">
+                <div class="cta-section">
+                    <h2>Convite à Avaliação</h2>
+                    <h3>Sua Experiência e Visão São Fundamentais</h3>
+                    <p>Este protótipo conceitual representa uma primeira etapa no desenvolvimento de uma solução inovadora para o CBMSC. Sua avaliação crítica sobre a relevância, viabilidade e potencial de impacto desta proposta é essencial para seu aprimoramento e para fundamentar futuras decisões sobre implementação.</p>
+                    
+                    <p style="margin-top: 1.5rem;"><strong>Aguardamos seu feedback valioso!</strong></p>
+                    <a href="https://wa.me/5548991611666" class="whatsapp-button" target="_blank">Falar no WhatsApp com o Pesquisador</a>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Modal para zoom do diagrama -->
+    <div id="diagramModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeDiagram()">&times;</span>
+            <img id="diagramImg" src="diagrama.png" alt="Diagrama da Arquitetura Técnica" onclick="toggleZoom(this)">
+        </div>
+    </div>
+
+    <script>
+        function openDiagram() {
+            const modal = document.getElementById('diagramModal');
+            const img = document.getElementById('diagramImg');
+            modal.style.display = 'block';
+            img.classList.remove('zoomed');
+        }
+
+        function closeDiagram() {
+            const modal = document.getElementById('diagramModal');
+            modal.style.display = 'none';
+        }
+
+        function toggleZoom(img) {
+            img.classList.toggle('zoomed');
+        }
+
+        // Fechar modal clicando fora da imagem
+        window.onclick = function(event) {
+            const modal = document.getElementById('diagramModal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        // Smooth scrolling for navigation
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+                // Fecha o menu em mobile após clicar em um item
+                const navMenu = document.getElementById('mainNav');
+                if (navMenu.classList.contains('active')) {
+                    navMenu.classList.remove('active');
+                }
+            });
+        });
+
+        // Toggle menu for mobile
+        document.getElementById('menuToggle').addEventListener('click', function() {
+            const navMenu = document.getElementById('mainNav');
+            navMenu.classList.toggle('active');
+        });
+
+        // Highlight current section in navigation
+        window.addEventListener('scroll', function() {
+            const sections = document.querySelectorAll('.section');
+            const navItems = document.querySelectorAll('.nav-item');
+            
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (scrollY >= (sectionTop - 200)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navItems.forEach(item => {
+                if (item.getAttribute('href') === '#' + current) {
+                    item.style.background = 'rgba(255,255,255,0.15)';
+                    item.style.color = 'white';
+                } else {
+                    item.style.background = 'transparent';
+                    item.style.color = 'rgba(255,255,255,0.8)';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
