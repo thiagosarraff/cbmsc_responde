@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conversa WhatsApp - CBMSC Responde (Escalonamento)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .phone-container {
+            width: 375px;
+            height: 812px;
+            background: #000;
+            border-radius: 40px;
+            padding: 10px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .screen {
+            width: 100%;
+            height: 100%;
+            background: #111b21;
+            border-radius: 30px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .status-bar {
+            height: 44px;
+            background: #2a3942;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .header {
+            height: 60px;
+            background: #2a3942;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            color: #fff;
+            flex-shrink: 0;
+        }
+
+        .profile-pic {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            overflow: hidden;
+        }
+
+        .profile-pic img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+        }
+
+        .contact-info {
+            flex: 1;
+        }
+
+        .contact-name {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 2px;
+        }
+
+        .contact-status {
+            font-size: 12px;
+            color: #8696a0;
+        }
+
+        .chat-container {
+            flex: 1;
+            background: #0b141a;
+            background-image: 
+                radial-gradient(at 25% 25%, rgba(255, 255, 255, 0.02) 0%, transparent 50%),
+                radial-gradient(at 75% 75%, rgba(255, 255, 255, 0.02) 0%, transparent 50%);
+            padding: 16px;
+            overflow-y: auto;
+        }
+
+        .message {
+            margin-bottom: 12px;
+            display: flex;
+            max-width: 80%;
+        }
+
+        .message.user {
+            margin-left: auto;
+            justify-content: flex-end;
+        }
+
+        .message.bot {
+            justify-content: flex-start;
+        }
+
+        .message.human {
+            justify-content: flex-start;
+        }
+
+        .message.system {
+            justify-content: center;
+            max-width: 90%;
+            margin: 20px auto;
+        }
+
+        .message-bubble {
+            padding: 8px 12px;
+            border-radius: 18px;
+            position: relative;
+            word-wrap: break-word;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .message.user .message-bubble {
+            background: #005c4b;
+            color: #fff;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message.bot .message-bubble {
+            background: #1f2937;
+            color: #e5e7eb;
+            border-bottom-left-radius: 4px;
+        }
+
+        .message.human .message-bubble {
+            background: #2d5016;
+            color: #e5e7eb;
+            border-bottom-left-radius: 4px;
+            border-left: 3px solid #4ade80;
+        }
+
+        .message.system .message-bubble {
+            background: #374151;
+            color: #d1d5db;
+            border-radius: 12px;
+            text-align: center;
+            font-style: italic;
+            padding: 12px 16px;
+        }
+
+        .message-text {
+            font-size: 14px;
+            line-height: 1.4;
+            margin-bottom: 4px;
+        }
+
+        .message-time {
+            font-size: 11px;
+            color: rgba(255,255,255,0.6);
+            text-align: right;
+            margin-top: 4px;
+        }
+
+        .message.bot .message-time {
+            color: rgba(229,231,235,0.6);
+        }
+
+        .message.human .message-time {
+            color: rgba(229,231,235,0.6);
+        }
+
+        .message.system .message-time {
+            color: rgba(209,213,219,0.6);
+            text-align: center;
+        }
+
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            background: #1f2937;
+            border-radius: 18px;
+            margin-bottom: 12px;
+            max-width: 80px;
+            border-bottom-left-radius: 4px;
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 4px;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #8696a0;
+            animation: typing 1.4s infinite ease-in-out;
+        }
+
+        .dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% {
+                transform: translateY(0);
+                opacity: 0.4;
+            }
+            30% {
+                transform: translateY(-10px);
+                opacity: 1;
+            }
+        }
+
+        .input-area {
+            height: 60px;
+            background: #2a3942;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            gap: 12px;
+            flex-shrink: 0;
+        }
+
+        .input-field {
+            flex: 1;
+            background: #111b21;
+            border: none;
+            border-radius: 20px;
+            padding: 8px 16px;
+            color: #fff;
+            font-size: 14px;
+        }
+
+        .send-button {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #00a884;
+            border: none;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .bot-name {
+            font-weight: 600;
+            color: #00a884;
+            margin-bottom: 4px;
+            font-size: 13px;
+        }
+
+        .human-name {
+            font-weight: 600;
+            color: #4ade80;
+            margin-bottom: 4px;
+            font-size: 13px;
+        }
+
+        /* Scrollbar customization */
+        .chat-container::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chat-container::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .chat-container::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
+        }
+
+        .chat-container::-webkit-scrollbar-thumb:hover {
+            background: rgba(255,255,255,0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-container">
+        <div class="screen">
+            <div class="status-bar">
+                <span>16:18</span>
+                <span>••• 5G ••• 78%</span>
+            </div>
+            
+            <div class="header">
+                <div class="profile-pic">
+                    <img src="https://www.cbm.sc.gov.br/images/imagens/O_CBMSC/logo.png" alt="CBMSC">
+                </div>
+                <div class="contact-info">
+                    <div class="contact-name">CBMSC Responde</div>
+                    <div class="contact-status">Assistente Virtual • online</div>
+                </div>
+            </div>
+
+            <div class="chat-container">
+                <div class="message user">
+                    <div class="message-bubble">
+                        <div class="message-text">Quero saber sobre o curso.</div>
+                        <div class="message-time">16:10</div>
+                    </div>
+                </div>
+
+                <div class="message bot">
+                    <div class="message-bubble">
+                        <div class="bot-name">CBMSC Responde</div>
+                        <div class="message-text">Olá! O CBMSC oferece diversos cursos. Para que eu possa ajudar, poderia especificar a qual curso você se refere?</div>
+                        <div class="message-time">16:10</div>
+                    </div>
+                </div>
+
+                <div class="message bot">
+                    <div class="message-bubble">
+                        <div class="message-text">Por exemplo:<br>
+1. Curso de Bombeiro Comunitário<br>
+2. Curso de Guarda-Vidas Civil Voluntário<br>
+3. Curso para se tornar Bombeiro Militar<br>
+
+Ou outro?</div>
+                        <div class="message-time">16:11</div>
+                    </div>
+                </div>
+
+                <div class="message user">
+                    <div class="message-bubble">
+                        <div class="message-text">o dos bombeiros</div>
+                        <div class="message-time">16:12</div>
+                    </div>
+                </div>
+
+                <div class="message bot">
+                    <div class="message-bubble">
+                        <div class="bot-name">CBMSC Responde</div>
+                        <div class="message-text">Certo. Você se refere ao concurso e formação para se tornar um Bombeiro Militar (carreira) ou a um curso para se tornar bombeiro comunitário?</div>
+                        <div class="message-time">16:12</div>
+                    </div>
+                </div>
+
+                <div class="message user">
+                    <div class="message-bubble">
+                        <div class="message-text">nao sei, me ajuda</div>
+                        <div class="message-time">16:13</div>
+                    </div>
+                </div>
+
+                <div class="message bot">
+                    <div class="message-bubble">
+                        <div class="bot-name">CBMSC Responde</div>
+                        <div class="message-text">Compreendo que a dúvida persiste. Para lhe fornecer a informação mais precisa e evitar qualquer mal-entendido, vou transferir sua conversa para um de nossos atendentes.</div>
+                        <div class="message-time">16:13</div>
+                    </div>
+                </div>
+
+                <div class="message bot">
+                    <div class="message-bubble">
+                        <div class="message-text">Por favor, aguarde um momento.</div>
+                        <div class="message-time">16:14</div>
+                    </div>
+                </div>
+
+                <div class="typing-indicator">
+                    <div class="typing-dots">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                </div>
+
+                <div class="message system">
+                    <div class="message-bubble">
+                        <div class="message-text">Sistema transferindo conversa para atendente humano...
+Histórico da conversa enviado para análise.</div>
+                        <div class="message-time">16:15</div>
+                    </div>
+                </div>
+
+                <div class="message human">
+                    <div class="message-bubble">
+                        <div class="human-name">Soldado Silva - CBMSC</div>
+                        <div class="message-text">Olá, aqui é o Soldado Silva. Vi que você tem dúvidas sobre nossos cursos.</div>
+                        <div class="message-time">16:16</div>
+                    </div>
+                </div>
+
+                <div class="message human">
+                    <div class="message-bubble">
+                        <div class="message-text">Para qual finalidade você busca a capacitação? Gostaria de seguir carreira militar ou aprender sobre prevenção para aplicar em sua empresa/comunidade?</div>
+                        <div class="message-time">16:16</div>
+                    </div>
+                </div>
+
+                <div class="message user">
+                    <div class="message-bubble">
+                        <div class="message-text">Ah, agora entendi melhor! Quero seguir carreira, ser bombeiro mesmo. Como faço?</div>
+                        <div class="message-time">16:17</div>
+                    </div>
+                </div>
+
+                <div class="message human">
+                    <div class="message-bubble">
+                        <div class="human-name">Soldado Silva - CBMSC</div>
+                        <div class="message-text">Perfeito! Para seguir carreira como Bombeiro Militar, você precisa participar do concurso público. Atualmente não temos edital aberto, mas pode acompanhar as novidades no site oficial do CBMSC.</div>
+                        <div class="message-time">16:18</div>
+                    </div>
+                </div>
+
+                <div class="message human">
+                    <div class="message-bubble">
+                        <div class="message-text">O próximo concurso deve ter vagas para Soldado. Posso te enviar o link com informações sobre requisitos e como se preparar. Te interessa?</div>
+                        <div class="message-time">16:18</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="input-area">
+                <input type="text" class="input-field" placeholder="Digite uma mensagem">
+                <button class="send-button">→</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
