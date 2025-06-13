@@ -279,6 +279,40 @@
             margin: 2rem 0;
         }
 
+        .scenarios-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .scenario-item {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .scenario-item h3 {
+            color: #c41e3a;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .scenario-item p {
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        /* Ajuste para mobile - volta para 1 coluna */
+        @media (max-width: 900px) {
+            .scenarios-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+        }
+
         .scenario-embed {
             border: 1px solid #dee2e6;
             border-radius: 8px;
@@ -633,6 +667,7 @@
                         <li><strong>RF02:</strong> Consulta a informações e status de processos SCI</li>
                         <li><strong>RF03:</strong> Triagem de demandas não emergenciais e direcionamento</li>
                         <li><strong>RF04:</strong> Acesso a informações administrativas e de pessoal (autenticado)</li>
+                        <li><strong>RF05:</strong> Escalonamento para Atendimento Humano</li>
                     </ul>
                 </div>
             </section>
@@ -666,36 +701,47 @@
             <section id="cenarios" class="section">
                 <h2>Cenários de Uso Demonstrativos</h2>
                 
-                <p>Para ilustrar a aplicabilidade do "CBMSC Responde", foram desenvolvidos três cenários interativos que demonstram o funcionamento esperado para cada público-alvo prioritário.</p>
+                <p>Para ilustrar a aplicabilidade do "CBMSC Responde", foram desenvolvidos quatro cenários interativos que demonstram o funcionamento esperado para cada público-alvo prioritário e situações especiais.</p>
 
-                <div class="scenario-section">
-                    <h3>Cenário 1: Orientação sobre Regularização de Estabelecimento Comercial</h3>
-                    <p>Demonstra como o assistente virtual orienta um proprietário de sala comercial no processo de obtenção do Atestado de Funcionamento, esclarecendo dúvidas sobre o sistema E-SCI e fornecendo orientação personalizada.</p>
-                    
-                    <div class="scenario-embed">
-                        <iframe src="https://thiagosarraff.github.io/cbmsc_responde/cenario_sci.html" title="Cenário 1 - SCI"></iframe>
+                <div class="scenarios-grid">
+                    <div class="scenario-item">
+                        <h3>Cenário 1: Regularização SSCI</h3>
+                        <p>Demonstra como o assistente virtual orienta um proprietário de sala comercial no processo de obtenção do Atestado de Funcionamento, esclarecendo dúvidas sobre o sistema E-SCI.</p>
+                        
+                        <div class="scenario-embed">
+                            <iframe src="https://thiagosarraff.github.io/cbmsc_responde/cenario_sci.html" title="Cenário 1 - SCI"></iframe>
+                        </div>
                     </div>
-                </div>
 
-                <div class="scenario-section">
-                    <h3>Cenário 2: Triagem de Demanda Não Emergencial</h3>
-                    <p>Ilustra a capacidade do assistente em atuar como filtro inteligente para demandas não emergenciais, realizando triagem, fornecendo orientações preventivas e direcionando para o órgão competente.</p>
-                    
-                    <div class="scenario-embed">
-                        <iframe src="https://thiagosarraff.github.io/cbmsc_responde/cenario_cobom.html" title="Cenário 2 - COBOM"></iframe>
+                    <div class="scenario-item">
+                        <h3>Cenário 2: Triagem COBOM</h3>
+                        <p>Ilustra a capacidade do assistente em atuar como filtro inteligente para demandas não emergenciais, realizando triagem e direcionamento adequado.</p>
+                        
+                        <div class="scenario-embed">
+                            <iframe src="https://thiagosarraff.github.io/cbmsc_responde/cenario_cobom.html" title="Cenário 2 - COBOM"></iframe>
+                        </div>
                     </div>
-                </div>
 
-                <div class="scenario-section">
-                    <h3>Cenário 3: Consulta Interna sobre Conversão de Licença Especial</h3>
-                    <p>Demonstra o atendimento ao público interno, com autenticação e orientação sobre processo complexo de conversão de Licença Especial em pecúnia, respeitando o contexto legal vigente.</p>
-                    
-                    <div class="scenario-embed">
-                        <iframe src="https://thiagosarraff.github.io/cbmsc_responde/cenario_dp.html" title="Cenário 3 - DP"></iframe>
+                    <div class="scenario-item">
+                        <h3>Cenário 3: Consulta Interna DP</h3>
+                        <p>Demonstra o atendimento ao público interno, com autenticação e orientação sobre conversão de Licença Especial em pecúnia.</p>
+                        
+                        <div class="scenario-embed">
+                            <iframe src="https://thiagosarraff.github.io/cbmsc_responde/cenario_dp.html" title="Cenário 3 - DP"></iframe>
+                        </div>
+                    </div>
+
+                    <div class="scenario-item">
+                        <h3>Cenário 4: Escalonamento Humano</h3>
+                        <p>Demonstra como o assistente identifica situações que requerem intervenção humana e realiza o escalonamento adequado para atendente especializado.</p>
+                        
+                        <div class="scenario-embed">
+                            <iframe src="https://thiagosarraff.github.io/cbmsc_responde/cenario_humano.html" title="Cenário 4 - Escalonamento"></iframe>
+                        </div>
                     </div>
                 </div>
             </section>
-
+            
             <section id="beneficios" class="section">
                 <h2>Benefícios e Impactos Esperados</h2>
 
